@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  # ── Backend principal ────────────────────────────────
+  backend:
+    build:
+      context: ../mision-4-auth   # usa el código de la misión 4
+      dockerfile: ../mision-5-docker/Dockerfile
+    container_name: mision-backend
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      JWT_SECRET: ${JWT_SECRET:-super-secreto-cambiar-en-produccion}
+    restart: unless-stopped   # reinicia si el proceso muere
+    networks:
+      - app-network
+    # En producción agregarías:
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+
+  # ── (Opcional) Base de datos ──────────────────────────
+  # Descomenta para agregar PostgreSQL real:
+  #
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: mision-db
+  #   environment:
+  #     POSTGRES_DB: misiondb
+  #     POSTGRES_USER: ${DB_USER:-admin}
+  #     POSTGRES_PASSWORD: ${DB_PASS:-secreto}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - app-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U admin -d misiondb"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+# volumes:
+#   postgres_data:
