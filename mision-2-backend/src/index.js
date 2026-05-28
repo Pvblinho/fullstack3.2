@@ -9,6 +9,10 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/products", productRoutes);
 
+app.get("/", (req, res) => {
+  res.json({ message: "API de productos - usa /api/products" });
+});
+
 app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada" });
 });
